@@ -2,19 +2,17 @@
 
 namespace App\Controllers;
 
-use App\Models\UserModel;
+use App\Models\AdminModel;
 use CodeIgniter\RESTful\ResourceController;
-use CodeIgniter\API\ResponseTrait;
 
-class UserController extends ResourceController
+class AdminController extends ResourceController
 {
-    use ResponseTrait;
     protected $format = 'json';
 
     public function index()
     {
-        $userModel = new \App\Models\UserModel();
-        $data = $userModel->findAll();
+        $adminModel = new \App\Models\AdminModel();
+        $data = $adminModel->findAll();
 
         if (!empty($data)) {
             $response = [
@@ -33,38 +31,18 @@ class UserController extends ResourceController
         return $this->respond($response);
     }
 
-    public function SignUp()
-    {
-        $data = [
-            'nama' => $this->request->getVar('nama'),
-            'email' => $this->request->getVar('email'),
-            'password' => $this->request->getVar('password'),
-        ];
-
-        $userModel = new UserModel();
-        $userModel->save($data);
-
-        $response = [
-            'status' => 'success',
-            'message' => 'Data berhasil ditambahkan',
-            'data' => $data,
-        ];
-
-        return $this->respond($response);
-    }
-
     public function SignIn()
     {
-        $userModel = new UserModel();
+        $adminModel = new AdminModel();
 
         $data = [
             'email' => $this->request->getVar('email'),
             'password' => $this->request->getVar('password'),
         ];
 
-        $user = $userModel->where('email', $data['email'])->first();
+        $admin = $adminModel->where('email', $data['email'])->first();
 
-        if (!$user || $data['password'] != $user->password) {
+        if (!$admin || $data['password'] != $admin->password) {
             // return $this->failUnauthorized('Login Failed, Invalid username or password');
             return $this->respond([
                 'code' => 200,
@@ -78,22 +56,42 @@ class UserController extends ResourceController
             'code' => 200,
             'status' => 'success',
             'message' => 'Login successful',
-            'values' => [$user]
+            'values' => [$admin]
         ]);
+    }
+
+    public function create()
+    {
+        $data = [
+            'nama' => $this->request->getVar('nama'),
+            'email' => $this->request->getVar('email'),
+            'password' => $this->request->getVar('password'),
+        ];
+
+        $userModel = new AdminModel();
+        $userModel->save($data);
+
+        $response = [
+            'status' => 'success',
+            'message' => 'Data berhasil ditambahkan',
+            'data' => $data,
+        ];
+
+        return $this->respond($response);
     }
 
     public function update($id = null)
     {
-        $userModel = new \App\Models\UserModel();
-        $user = $userModel->find($id);
-        if ($user) {
+        $adminModel = new \App\Models\AdminModel();
+        $admin = $adminModel->find($id);
+        if ($admin) {
             $data = [
                 'id' => $id,
                 'nama' => $this->request->getVar('nama'),
                 'email' => $this->request->getVar('email'),
                 'password' => $this->request->getVar('password'),
             ];
-            $proses = $userModel->save($data);
+            $proses = $adminModel->save($data);
             if ($proses) {
                 $response = [
                     'status' => 200,
@@ -113,10 +111,10 @@ class UserController extends ResourceController
 
     public function delete($id = null)
     {
-        $userModel = new \App\Models\UserModel();
-        $user = $userModel->find($id);
-        if ($user) {
-            $proses = $userModel->delete($id);
+        $adminModel = new \App\Models\AdminModel();
+        $admin = $adminModel->find($id);
+        if ($admin) {
+            $proses = $adminModel->delete($id);
             if ($proses) {
                 $response = [
                     'status' => 200,
@@ -134,3 +132,6 @@ class UserController extends ResourceController
         }
     }
 }
+
+
+
