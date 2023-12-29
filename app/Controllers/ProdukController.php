@@ -2,17 +2,17 @@
 
 namespace App\Controllers;
 
-use App\Models\ProdukTasModel;
+use App\Models\ProdukModel;
 use CodeIgniter\RESTful\ResourceController;
 
-class ProdukTasController extends ResourceController
+class ProdukController extends ResourceController
 {
     protected $format = 'json';
 
     public function index()
     {
-        $tasModel = new \App\Models\ProdukTasModel();
-        $data = $tasModel->findAll();
+        $produkModel = new \App\Models\ProdukModel();
+        $data = $produkModel->findAll();
 
         if (!empty($data)) {
             $response = [
@@ -37,6 +37,27 @@ class ProdukTasController extends ResourceController
         return $this->response->download(WRITEPATH . 'uploads/' . $filename, null);
     }
 
+    public function show($id = null)
+    {
+        $produkModel = new \App\Models\ProdukModel();
+        $produk = $produkModel->find($id);
+
+        if ($produk) {
+            $response = [
+                'status' => 'success',
+                'message' => 'Data retrieved successfully',
+                'data' => $produk,
+            ];
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => 'Data not found',
+                'data' => [],
+            ];
+        }
+
+        return $this->respond($response);
+    }
 
     public function create()
     {
@@ -60,8 +81,8 @@ class ProdukTasController extends ResourceController
             return $this->respond($response);
         }
 
-        $tasModel = new \App\Models\ProdukTasModel();
-        $proses = $tasModel->save($data);
+        $produkModel = new \App\Models\ProdukModel();
+        $proses = $produkModel->save($data);
 
         if ($proses) {
             $response = [
@@ -81,10 +102,10 @@ class ProdukTasController extends ResourceController
 
     public function update($id = null)
 {
-    $tasModel = new \App\Models\ProdukTasModel();
-    $tas = $tasModel->find($id);
+    $produkModel = new \App\Models\ProdukModel();
+    $produk = $produkModel->find($id);
 
-    if ($tas) {
+    if ($produk) {
         $data = [
             'productName' => $this->request->getVar('productName'),
             'productDescription' => $this->request->getVar('productDescription'),
@@ -95,8 +116,8 @@ class ProdukTasController extends ResourceController
 
         if ($newImage->isValid() && !$newImage->hasMoved()) {
             // Delete the old image if it exists
-            if (!empty($tas['productImage'])) {
-                $oldImagePath = WRITEPATH . 'uploads/' . $tas['productImage'];
+            if (!empty($produk['productImage'])) {
+                $oldImagePath = WRITEPATH . 'uploads/' . $produk['productImage'];
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }
@@ -107,16 +128,16 @@ class ProdukTasController extends ResourceController
             $data['productImage'] = $newName;
         } else {
             // If no new image is uploaded, retain the existing image
-            $data['productImage'] = $tas['productImage'];
+            $data['productImage'] = $produk['productImage'];
         }
 
         // Use update method from the model
-        $proses = $tasModel->update($id, $data);
+        $proses = $produkModel->update($id, $data);
 
         if ($proses) {
             $response = [
                 'status' => 200,
-                'messages' => 'Data Produk Tas berhasil diubah',
+                'messages' => 'Data Produk produk berhasil diubah',
                 'data' => $data,
             ];
         } else {
@@ -129,21 +150,21 @@ class ProdukTasController extends ResourceController
         return $this->respond($response);
     }
 
-    return $this->failNotFound('Data Produk Tas tidak ditemukan');
+    return $this->failNotFound('Data Produk produk tidak ditemukan');
 }
 
     public function delete($id = null)
     {
-        $tasModel = new ProdukTasModel();
-        $tas = $tasModel->find($id);
+        $produkModel = new ProdukModel();
+        $produk = $produkModel->find($id);
 
-        if ($tas) {
-            $proses = $tasModel->delete($id);
+        if ($produk) {
+            $proses = $produkModel->delete($id);
 
             if ($proses) {
                 $response = [
                     'status' => 200,
-                    'messages' => 'Data Produk Tas berhasil dihapus',
+                    'messages' => 'Data Produk produk berhasil dihapus',
                 ];
             } else {
                 $response = [
@@ -154,7 +175,7 @@ class ProdukTasController extends ResourceController
 
             return $this->respond($response);
         } else {
-            return $this->failNotFound('Data Produk Tas tidak ditemukan');
+            return $this->failNotFound('Data Produk produk tidak ditemukan');
         }
     }
 }

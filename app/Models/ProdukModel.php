@@ -4,11 +4,11 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class ProdukTasModel extends Model
+class ProdukModel extends Model
 {
-    protected $table = 'produk_tas';
+    protected $table = 'produk';
     protected $primaryKey = 'id';
-    protected $returnType = ProdukTasModel::class;
+    protected $returnType = ProdukModel::class;
     protected $useSoftDeletes = false;
 
     protected $allowedFields = [

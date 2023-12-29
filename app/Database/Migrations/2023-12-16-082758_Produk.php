@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateProdukTendaTable extends Migration
+class Produk extends Migration
 {
     public function up()
     {
@@ -35,11 +35,11 @@ class CreateProdukTendaTable extends Migration
         ]);
 
         $this->forge->addKey('id', true);
-        $this->forge->createTable('produk_tenda');
+        $this->forge->createTable('produk');
     }
 
     public function down()
     {
-        $this->forge->dropTable('produk_tenda');
+        $this->forge->dropTable('produk');
     }
 }
